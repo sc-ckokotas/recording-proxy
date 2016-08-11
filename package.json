@@ -1,0 +1,23 @@
+{
+  "name": "recording-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "proxy.js",
+  "scripts": {
+    "crawler": "nodemon dev/mock-crawler/ -w dev/mock-crawler -e js",
+    "dev": "npm run mock && npm run crawler",
+    "mock": "nodemon dev/mock-server/ -w dev/mock-server -e js,html",
+    "start": "echo 'nothing yet...'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "phantomjs-prebuilt": "^2.1.11"
+  }
+}

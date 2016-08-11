@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Dummy Page</title>
+		<style media="screen">
+			body {
+				font-family: sans-serif;
+			}
+
+			form {
+				border: 1px solid rgba(128, 128, 128, .7);
+				margin-bottom: 16px;
+				padding: 8px;
+			}
+
+			label {
+				margin-right: 8px;
+			}
+
+			iframe {
+				display: none;
+			}
+
+			.flex-col {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.flex-row {
+				display: flex;
+				flex-direction: row;
+			}
+
+			.username-wrapper {
+				margin-top: 8px;
+			}
+
+			.wrapper {
+				margin-bottom: 8px;
+			}
+
+			.wrapper label {
+				width: 74px;
+			}
+
+			#username {
+				margin-right: 8px;
+			}
+
+			#username, #email, #password {
+				flex-grow: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<form id="get-user" action="/user" method="post" target="proxy">
+			<label for="username">Lookup Username</label>
+			<div class="flex-row username-wrapper">
+				<input id="username" type="text">
+				<input type="submit" value="Lookup">
+			</div>
+		</form>
+		<form id="login" action="/login" method="post" target="proxy">
+			<div class="flex-col">
+				<div class="flex-row wrapper">
+					<label for="email">Email:</label>
+					<input id="email" type="text">
+				</div>
+				<div class="flex-row wrapper">
+					<label for="password">Password:</label>
+					<input id="password" type="password">
+				</div>
+				<input type="submit" value="Login">
+			</div>
+		</form>
+		<iframe src="form-submit-proxy" name="proxy" width="0" height="0"></iframe>
+	</body>
+</html>
