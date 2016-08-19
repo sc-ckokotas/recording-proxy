@@ -1,91 +1,119 @@
 "use strict";
 
 const Recorder = require('../../Recorder');
+const NOOP = function noop(){};
+const validMarker = {
+	method: 'GET',
+	path: '/foo'
+};
+const altEndMarker = {
+	method: 'GET',
+	path: '/bar'
+};
+
+var instance = null,
+	errorMessage = null;
 
 describe("Recorder class:", () => {
-
-	let validMarker = {
-		method: 'GET',
-		path: '/foo'
-	};
-
 	describe("The constructor", () => {
-		var instance = null;
+		beforeEach(() => {
+			instance = null;
+			errorMessage = null;
+		});
 
-		it("should require two arguments.", () => {
-			try{
+		it("should require three arguments.", () => {
+			errorMessage = trySnippet(() => {
 				instance = new Recorder;
-			}catch(e){
-				expect(e.message).toBe('Recorder requires two arguments at construction.');
-			} expect(instance).toBe(null);
+			});
+			expect(errorMessage).toBe('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
+			expect(instance).toBe(null);
 
-			try{
+			errorMessage = trySnippet(() => {
 				instance = new Recorder(validMarker);
-			}catch(e){
-				expect(e.message).toBe('Recorder requires two arguments at construction.');
-			} expect(instance).toBe(null);
+			});
+			expect(errorMessage).toBe('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
+			expect(instance).toBe(null);
 
-			try{
+			errorMessage = trySnippet(() => {
 				instance = new Recorder(null, validMarker);
-			}catch(e){
-				expect(e.message).toBe('Recorder requires two arguments at construction.');
-			} expect(instance).toBe(null);
+			});
+			expect(errorMessage).toBe('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
+			expect(instance).toBe(null);
 
-			expect(new Recorder(validMarker, validMarker) instanceof Recorder).toBe(true);
+			errorMessage = trySnippet(() => {
+				instance = new Recorder(validMarker, validMarker);
+			});
+			expect(errorMessage).toBe('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
+			expect(instance).toBe(null);
+
+			expect(new Recorder(validMarker, validMarker, NOOP) instanceof Recorder).toBe(true);
 		});
 
 		describe("should accept an object as it's first argument", () => {
-			it("and contain property 'method'.", () => {
-				try{
-					instance = new Recorder({}, validMarker);
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "startMarker"');
-				} expect(instance).toBe(null);
+			beforeEach(() => {
+				instance = null;
+				errorMessage = null;
+			});
 
-				try{
-					instance = new Recorder({path: validMarker.path}, validMarker)
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "startMarker"');
-				} expect(instance).toBe(null);
+			it("and contain property 'method'.", () => {
+				errorMessage = trySnippet(() => {
+					instance = new Recorder({}, validMarker, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "startMarker"');
+				expect(instance).toBe(null);
+
+				errorMessage = trySnippet(() => {
+					instance = new Recorder({path: validMarker.path}, validMarker, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "startMarker"');
+				expect(instance).toBe(null);
 			});
 
 			it("and contain property 'path'.", () => {
-				try{
-					instance = new Recorder({method: validMarker.method}, validMarker)
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "startMarker"');
-				} expect(instance).toBe(null);
+				errorMessage = trySnippet(() => {
+					instance = new Recorder({method: validMarker.method}, validMarker, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "startMarker"');
+				expect(instance).toBe(null);
 			});
 		});
 
 		describe("should accept an object as it's second argument", () => {
-			it("and contain property 'method'.", () => {
-				try{
-					instance = new Recorder(validMarker, {});
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "endMarker"');
-				} expect(instance).toBe(null);
+			beforeEach(() => {
+				instance = null;
+				errorMessage = null;
+			});
 
-				try{
-					instance = new Recorder(validMarker, {path: validMarker.path})
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "endMarker"');
-				} expect(instance).toBe(null);
+			it("and contain property 'method'.", () => {
+				errorMessage = trySnippet(() => {
+					instance = new Recorder(validMarker, {}, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "endMarker"');
+				expect(instance).toBe(null);
+
+				errorMessage = trySnippet(() => {
+					instance = new Recorder(validMarker, {path: validMarker.path}, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "endMarker"');
+				expect(instance).toBe(null);
 			});
 
 			it("and contain property 'path'.", () => {
-				try{
-					instance = new Recorder(validMarker, {method: validMarker.method});
-				}catch(e){
-					expect(e.message).toBe('Recorder constructed with bad "endMarker"');
-				} expect(instance).toBe(null);
+				errorMessage = trySnippet(() => {
+					instance = new Recorder(validMarker, {method: validMarker.method}, NOOP);
+				});
+				expect(errorMessage).toBe('Recorder constructed with bad "endMarker"');
+				expect(instance).toBe(null);
 			});
+		});
+
+		it("should accept an function as it's third argument", () => {
+			// try
 		});
 	});
 
 	describe("Each instance", () => {
-		var instance = null;
-		var reqStub = {
+		let reqStub = {
 			headers: '1234567890-test',
 			method: 'GET',
 			path: '/foo'
@@ -93,7 +121,7 @@ describe("Recorder class:", () => {
 
 		describe("should have a 'middleware' property", () => {
 			beforeEach(() => {
-				instance = new Recorder(validMarker, validMarker);
+				instance = new Recorder(validMarker, altEndMarker, NOOP);
 			});
 
 			it("that is a function.", () => {
@@ -114,15 +142,15 @@ describe("Recorder class:", () => {
 
 	describe("The prototype", () => {
 		describe("should have a 'requestMatchesStart' method", () => {
+			beforeEach(() => {
+				errorMessage = null;
+			});
+
 			it("that requires one argument 'req'", () => {
-				var exceptionsCaught = 0;
-				try {
+				errorMessage = trySnippet(() => {
 					Recorder.prototype.requestMatchesStart();
-				} catch (e) {
-					exceptionsCaught += 1;
-					expect(e.message).toBe('Expected a request object.');
-				}
-				expect(exceptionsCaught).toBe(1);
+				});
+				expect(errorMessage).toBe('Expected a request object.');
 			});	
 
 			it("that returns true when all properties in '_start' can be found in 'req'.", () => {
@@ -141,15 +169,15 @@ describe("Recorder class:", () => {
 		});
 
 		describe("should have a 'requestMatchesEnd' method", () => {
+			beforeEach(() => {
+				errorMessage = null;
+			});
+
 			it("that requires one argument 'req'", () => {
-				var exceptionsCaught = 0;
-				try {
-					Recorder.prototype.requestMatchesStart();
-				} catch (e) {
-					exceptionsCaught += 1;
-					expect(e.message).toBe('Expected a request object.');
-				}
-				expect(exceptionsCaught).toBe(1);
+				errorMessage = trySnippet(() => {
+					Recorder.prototype.requestMatchesEnd();
+				});
+				expect(errorMessage).toBe('Expected a request object.');
 			});
 				
 
@@ -170,3 +198,11 @@ describe("Recorder class:", () => {
 
 	});
 });
+
+function trySnippet(cb){
+	try {
+		cb();
+	}catch(e){
+		return e.message;
+	}
+}

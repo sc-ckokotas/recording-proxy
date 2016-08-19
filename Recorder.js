@@ -14,8 +14,9 @@ class Recorder {
 	 * @param {Object} startMarker
 	 * @param {Object} endMarker
 	 */
-	constructor(startMarker, endMarker){
-		if(!startMarker || !endMarker) throw new Error('Recorder requires two arguments at construction.');
+	constructor(startMarker, endMarker, callback){
+		if(!startMarker || !endMarker || !callback) throw new Error('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
+		// if(typeof callback !== 'function') 
 
 		this._key = null;
 		this._recording = false;
@@ -23,28 +24,26 @@ class Recorder {
 		this._start = validateStart(startMarker);
 		this._end = validateEnd(endMarker);
 
-		this.middleware = (req, res) => {
+		this.middleware = (request, response) => {
 			if(!this._recording){
-				this._recording = this.requestMatchesStart(req);
-				this.middleware(req, res); // recurse to reach the else case if this.requestMatchesStart === true
+				if(this.requestMatchesStart(request)){
+					this._recording = true;
+					this.middleware(request, response); // recurse to reach the else case if this.requestMatchesStart === true
+				}
 			}else{
-				if(!this._key){
-					this._key = JSON.stringify({
-						headers: req.headers,
-						method: req.method,
-						path: req.path
-					});
+				if(!this._key) this._key = makeKey(request);
+				this._requests[makeKey(request)] = response;
 
-					// do something with res
-				}else{
-					// add all other req and res
+				if(this.requestMatchesEnd(request)){
+					this._recording = false;
+					callback();
 				}
 			}
 		};
 	}
 
 	/**
-	 * Does the request object have identical properties to the start marker for this Recorder.
+	 * Determines if the request object has identical properties to the start marker for this Recorder.
 	 * 
 	 * @param {Request} req
 	 * @returns Boolean
@@ -54,10 +53,10 @@ class Recorder {
 	}
 
 	/**
-	 * Does the request object have identical properties to the end marker for this Recorder.
+	 * Determines if the request object has identical properties to the end marker for this Recorder.
 	 * 
-	 * @param {any} req
-	 * @returns
+	 * @param {Request} req
+	 * @returns Boolean
 	 */
 	requestMatchesEnd(req){
 		return matchesMarker(this._end, req);
@@ -67,6 +66,14 @@ class Recorder {
 module.exports = Recorder;
 
 // helpers ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function makeKey(req){
+	return JSON.stringify({
+		headers: req.headers,
+		method: req.method,
+		path: req.path
+	});
+}
 
 function matchesMarker(marker, req){
 	if(!req) throw new Error('Expected a request object.');
