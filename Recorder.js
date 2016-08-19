@@ -8,6 +8,7 @@
  * @class Recorder
  */
 class Recorder {
+
 	/**
 	 * Creates an instance of Recorder.
 	 * 
