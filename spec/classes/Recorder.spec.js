@@ -4,10 +4,6 @@ const Recorder = require('../../Recorder');
 
 describe("Recorder class:", () => {
 
-	/**
-	 * An express middleware instance
-	 */
-
 	let validMarker = {
 		method: 'GET',
 		path: '/foo'
@@ -95,11 +91,11 @@ describe("Recorder class:", () => {
 			path: '/foo'
 		};
 
-		beforeEach(() => {
-			instance = new Recorder(validMarker, validMarker);
-		});
-
 		describe("should have a 'middleware' property", () => {
+			beforeEach(() => {
+				instance = new Recorder(validMarker, validMarker);
+			});
+
 			it("that is a function.", () => {
 				expect(typeof instance.middleware).toBe('function');
 			});
@@ -114,5 +110,63 @@ describe("Recorder class:", () => {
 				expect(instance._key).toBe(JSON.stringify(reqStub));
 			});
 		});
+	});
+
+	describe("The prototype", () => {
+		describe("should have a 'requestMatchesStart' method", () => {
+			it("that requires one argument 'req'", () => {
+				var exceptionsCaught = 0;
+				try {
+					Recorder.prototype.requestMatchesStart();
+				} catch (e) {
+					exceptionsCaught += 1;
+					expect(e.message).toBe('Expected a request object.');
+				}
+				expect(exceptionsCaught).toBe(1);
+			});	
+
+			it("that returns true when all properties in '_start' can be found in 'req'.", () => {
+				var ret = Recorder.prototype.requestMatchesStart.call({
+					_start: validMarker
+				}, validMarker);
+				expect(ret).toBe(true);
+			});
+
+			it("that returns true when all properties in '_start' can be found in 'req'.", () => {
+				var ret = Recorder.prototype.requestMatchesStart.call({
+					_start: validMarker
+				}, {});
+				expect(ret).toBe(false);
+			});
+		});
+
+		describe("should have a 'requestMatchesEnd' method", () => {
+			it("that requires one argument 'req'", () => {
+				var exceptionsCaught = 0;
+				try {
+					Recorder.prototype.requestMatchesStart();
+				} catch (e) {
+					exceptionsCaught += 1;
+					expect(e.message).toBe('Expected a request object.');
+				}
+				expect(exceptionsCaught).toBe(1);
+			});
+				
+
+			it("that returns true when all properties in '_end' can be found in 'req' ", () => {
+				var ret = Recorder.prototype.requestMatchesEnd.call({
+					_end: validMarker
+				}, validMarker);
+				expect(ret).toBe(true);
+			});
+
+			it("that returns true when all properties in '_end' can be found in 'req' ", () => {
+				var ret = Recorder.prototype.requestMatchesEnd.call({
+					_end: validMarker
+				}, {});
+				expect(ret).toBe(false);
+			});
+		});
+
 	});
 });

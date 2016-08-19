@@ -1,6 +1,19 @@
 "use strict"
 
+/**
+ * An object who's middleware method will wait for a starting request and then store all requests and responses until 
+ * an ending request is encountered. The Recorder can be replayed to simulate the recorded session for debugging 
+ * purposes.  
+ * 
+ * @class Recorder
+ */
 class Recorder {
+	/**
+	 * Creates an instance of Recorder.
+	 * 
+	 * @param {Object} startMarker
+	 * @param {Object} endMarker
+	 */
 	constructor(startMarker, endMarker){
 		if(!startMarker || !endMarker) throw new Error('Recorder requires two arguments at construction.');
 
@@ -30,17 +43,40 @@ class Recorder {
 		};
 	}
 
+	/**
+	 * Does the request object have identical properties to the start marker for this Recorder.
+	 * 
+	 * @param {Request} req
+	 * @returns Boolean
+	 */
 	requestMatchesStart(req){
-		return Object.keys(this._start).reduce((out, key) => {
-			if(!out) return out;
-			return req[key] === this._start[key];
-		}, true);
+		return matchesMarker(this._start, req);
+	}
+
+	/**
+	 * Does the request object have identical properties to the end marker for this Recorder.
+	 * 
+	 * @param {any} req
+	 * @returns
+	 */
+	requestMatchesEnd(req){
+		return matchesMarker(this._end, req);
 	}
 }
 
 module.exports = Recorder;
 
-// validators /////////////////////////////////
+// helpers ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function matchesMarker(marker, req){
+	if(!req) throw new Error('Expected a request object.');
+	return Object.keys(marker).reduce((out, key) => {
+		if(!out) return out;
+		return req[key] === marker[key];
+	}, true);
+}
+
+// validators /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function validateStart(marker){
 	if(!validateMarker(marker)) throw new Error('Recorder constructed with bad "startMarker"');
