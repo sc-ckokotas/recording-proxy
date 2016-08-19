@@ -7,7 +7,8 @@
     "crawler": "nodemon dev/mock-crawler/ -w dev/mock-crawler -e js",
     "dev": "npm run mock && npm run crawler",
     "mock": "nodemon dev/mock-server/ -w dev/mock-server -e js,html",
-    "start": "echo 'nothing yet...'"
+    "start": "echo 'nothing yet...'",
+    "test": "jasmine"
   },
   "author": "",
   "license": "ISC",

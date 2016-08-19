@@ -24,3 +24,7 @@ function logRequest(request){
 // config specifiying urls that will mark beginning and end of recording session
 
 // recorded sessions will be stored after end. Beginning marker will act as key for response sequence ??? should use actual hashmap ???
+
+// status-code, headers, body, start-time, latency(time to first byte), total-time, total-size -- (headers as JSON OK) (body as Blob or some binary data)
+
+// admin page with HAR(http-archive) (see kuit / ask steve) to view all recorders and manage them
