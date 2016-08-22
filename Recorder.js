@@ -17,13 +17,15 @@ class Recorder {
 	 */
 	constructor(startMarker, endMarker, callback){
 		if(!startMarker || !endMarker || !callback) throw new Error('Recorder requires three arguments at construction: "startMarker", "endMarker", and "callback".');
-		// if(typeof callback !== 'function') 
+
+		this._start = validateStart(startMarker);
+		this._end = validateEnd(endMarker);
+
+		if(typeof callback !== 'function') throw new Error('Recorder constructed with bad "callback"... Must be a function');
 
 		this._key = null;
 		this._recording = false;
 		this._requests = {};
-		this._start = validateStart(startMarker);
-		this._end = validateEnd(endMarker);
 
 		this.middleware = (request, response) => {
 			if(!this._recording){

@@ -108,7 +108,11 @@ describe("Recorder class:", () => {
 		});
 
 		it("should accept an function as it's third argument", () => {
-			// try
+			errorMessage = trySnippet(() => {
+				instance = new Recorder(validMarker, validMarker, {});
+			});
+			expect(errorMessage).toBe('Recorder constructed with bad "callback"... Must be a function');
+			expect(instance).toBe(null);
 		});
 	});
 
