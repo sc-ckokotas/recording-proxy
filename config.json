@@ -1,0 +1,11 @@
+{
+    "DEV": {
+        "PORT": 8001,
+        "APIS": 7,
+        "API_PATH": "/api-",
+        "END_PATH": "/end",
+        "REDIRECT_DELAY": 3000,
+        "START_PATH": "/start"
+    },
+    "PORT": 8000
+}

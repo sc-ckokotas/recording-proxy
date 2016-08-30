@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <style>
+            * {
+                font-family: sans-serif;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    <body>
+        <span id="display">loading...</span>
+        <script>
+            var totalDelay = <%= delay %>,
+                targetUrl = '<%= target %>',
+                start = Date.now(),
+                increment = 100,
+                elapsed = 0;
+
+            window.onload = function(){
+                setTimeout(function recurse(){
+                    elapsed = Date.now() - start;
+                    var remaining = elapsed < totalDelay ? totalDelay - elapsed : 0;
+
+                    display.innerText = 'Redirecting in: ' + remaining / 1000;
+
+                    if(remaining){
+                        setTimeout(recurse, increment);
+                    }else{
+                        window.location = targetUrl;
+                    }
+                }, 0);
+            };
+        </script>
+    </body>
+</html>

@@ -27,7 +27,7 @@ class Recorder {
 		this._recording = false;
 		this._requests = {};
 
-		this.middleware = (request, response) => {
+		this.middleware = (request, response, next) => {
 			if(!this._recording){
 				if(this.requestMatchesStart(request)){
 					this._recording = true;
@@ -39,9 +39,11 @@ class Recorder {
 
 				if(this.requestMatchesEnd(request)){
 					this._recording = false;
-					callback();
+					callback(this);
 				}
 			}
+
+			if(next) next();
 		};
 	}
 
