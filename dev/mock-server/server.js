@@ -4,7 +4,6 @@ const SimpleServer = require('../../lib/SimpleServer'),
 	path = require('path');
 
 const CONFIG = require('../../config.json').DEV,
-	LOCAL_URL = `http://localhost:${CONFIG.PORT}`,
 	REDIRECT_PATH = path.join(__dirname, './views/redirect.ejs'),
 	APIS = makeAPIMap(CONFIG.APIS);
 
@@ -16,7 +15,7 @@ new SimpleServer({
 		[`GET--${CONFIG.START_PATH}`]: (req, res) => {
 			res.render(REDIRECT_PATH, {
 				delay: CONFIG.REDIRECT_DELAY,
-				target: LOCAL_URL + CONFIG.API_PATH + 0
+				target: CONFIG.API_PATH + 0
 			});
 		},
 		[`GET--${CONFIG.END_PATH}`]: (req, res) => {
@@ -69,6 +68,6 @@ function delay(cb){
 		var args = arguments;
 		setTimeout(_ => {
 			cb.apply(null, args);
-		}, 1000);
+		}, CONFIG.RESPONSE_DELAY);
 	}
 }

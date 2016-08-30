@@ -1,15 +1,16 @@
 "use strict";
 
-const Recorder = require('../../Recorder');
-const NOOP = function noop(){};
-const validMarker = {
-	method: 'GET',
-	path: '/foo'
-};
-const altEndMarker = {
-	method: 'GET',
-	path: '/bar'
-};
+const Recorder = require('../../Recorder'),
+	trySnippet = require('../support/helpers').trySnippet,
+	NOOP = function noop(){},
+	validMarker = {
+		method: 'GET',
+		path: '/foo'
+	},
+	altEndMarker = {
+		method: 'GET',
+		path: '/bar'
+	};
 
 var instance = null,
 	errorMessage = null;
@@ -202,11 +203,3 @@ describe("Recorder class:", () => {
 
 	});
 });
-
-function trySnippet(cb){
-	try {
-		cb();
-	}catch(e){
-		return e.message;
-	}
-}

@@ -4,7 +4,8 @@
         "APIS": 7,
         "API_PATH": "/api-",
         "END_PATH": "/end",
-        "REDIRECT_DELAY": 3000,
+        "REDIRECT_DELAY": 0,
+        "RESPONSE_DELAY": 1000,
         "START_PATH": "/start"
     },
     "PORT": 8000

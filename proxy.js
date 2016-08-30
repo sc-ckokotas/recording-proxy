@@ -4,7 +4,7 @@ const SimpleServer = require('./lib/SimpleServer'),
 	cookieParser = require('cookie-parser'),
 	httpRequest = require('request'),
 	bodyParser = require('body-parser'),
-	Recorder = require('./Recorder');
+	Recorder = require('./lib/Recorder');
 
 const CONFIG = require('./config.json'),
 	PACKAGE = require('./package.json');
@@ -35,14 +35,18 @@ if(ARGS.dev){
 			const URL = LOCAL_URL + req.originalUrl,
 				METHOD = req.method.toLowerCase();
 
-			httpRequest[METHOD](URL).on('error', console.error).pipe(res);
+			if(!res.headersSent){
+				httpRequest[METHOD](URL).on('error', console.error).pipe(res);
+			}else{
+				res.end();
+			}
 		}
 	};
 
 	/**
 	 * Create dev recorder
 	 */
-	const recorder = new Recorder({
+	let recorder = new Recorder({
 		method: 'GET',
 		path: CONFIG.DEV.START_PATH
 	}, {
@@ -66,17 +70,8 @@ new SimpleServer({
 
 // helper abstractions ////////////////////////////////////////////////////////////////////////////////////////////////
 
-function recordingFinished(instance){
-	console.log('done')
-}
-
-function logRequest(request){
-	console.log(Date.now() + ' :: ' + JSON.stringify({
-		url: request.originalUrl, 
-		body: request.body, 
-		cookies: request.cookies, 
-		headers: request.headers
-	}, null, 2) + '\n');
+function recordingFinished(recorder){
+	recorder.replay = true;
 }
 
 // notes //////////////////////////////////////////////////////////////////////////////////////////////////////////////
