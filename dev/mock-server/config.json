@@ -1,6 +1,6 @@
 {
     "PORT": 8001,
-    "APIS": 2,
+    "APIS": 4,
     "API_PATH": "/api-",
     "REDIRECT_DELAY": 1000,
     "RESPONSE_DELAY": 3000,
