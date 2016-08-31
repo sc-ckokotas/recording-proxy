@@ -1,12 +1,12 @@
 {
-    "DEV": {
-        "PORT": 8001,
-        "APIS": 7,
-        "API_PATH": "/api-",
-        "END_PATH": "/end",
-        "REDIRECT_DELAY": 0,
-        "RESPONSE_DELAY": 1000,
-        "START_PATH": "/start"
+    "PORT": 8000,
+    "TARGET_URL": "https://expressjs.com",
+    "START_MARKER": {
+        "method": "GET",
+        "path": "/"
     },
-    "PORT": 8000
+    "END_MARKER": {
+        "method": "GET",
+        "path": "/en/resources/glossary.html"
+    }
 }

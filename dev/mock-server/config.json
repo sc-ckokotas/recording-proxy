@@ -1,0 +1,15 @@
+{
+    "PORT": 8001,
+    "APIS": 7,
+    "API_PATH": "/api-",
+    "REDIRECT_DELAY": 3000,
+    "RESPONSE_DELAY": 1000,
+    "START_MARKER": {
+        "method": "GET",
+        "path": "/start"
+    },
+    "END_MARKER": {
+        "method": "GET",
+        "path": "/end"
+    }
+}

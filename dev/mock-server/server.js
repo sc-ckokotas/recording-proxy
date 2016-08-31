@@ -3,28 +3,35 @@
 const SimpleServer = require('../../lib/SimpleServer'),
 	path = require('path');
 
-const CONFIG = require('../../config.json').DEV,
+const CONFIG = require('./config.json'),
 	REDIRECT_PATH = path.join(__dirname, './views/redirect.ejs'),
-	APIS = makeAPIMap(CONFIG.APIS);
+	apis = makeAPIMap(CONFIG.APIS);
 
 // server definition //////////////////////////////////////////////////////////////////////////////////////////////////
 
+const startRoute = makeKey(CONFIG.START_MARKER),
+	endRoute = makeKey(CONFIG.END_MARKER);
+
 new SimpleServer({
 	port: CONFIG.PORT,
-	routes: Object.assign({}, APIS, {
-		[`GET--${CONFIG.START_PATH}`]: (req, res) => {
+	routes: Object.assign({}, apis, {
+		[startRoute]: (req, res) => {
 			res.render(REDIRECT_PATH, {
 				delay: CONFIG.REDIRECT_DELAY,
 				target: CONFIG.API_PATH + 0
 			});
 		},
-		[`GET--${CONFIG.END_PATH}`]: (req, res) => {
+		[endRoute]: (req, res) => {
 			res.end('success!');
 		}
 	})
 });
 
 // helper abstractions ////////////////////////////////////////////////////////////////////////////////////////////////
+
+function makeKey(marker){
+	return `${marker.method.toUpperCase()}--${marker.path}`;
+}
 
 /**
  * Creates an object with routes that redirect in order.
@@ -52,7 +59,7 @@ function makeHandler(apiPath, isLast){
 	return (req, res) => {
 		res.render(REDIRECT_PATH, {
 			delay: CONFIG.REDIRECT_DELAY,
-			target: isLast ? CONFIG.END_PATH : apiPath
+			target: isLast ? CONFIG.END_MARKER.path : apiPath
 		});
 	};
 }

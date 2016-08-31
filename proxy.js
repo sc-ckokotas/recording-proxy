@@ -18,61 +18,59 @@ const ARGS = require('commander')
 
 // server definition //////////////////////////////////////////////////////////////////////////////////////////////////
 
-var routes;
-var middleware = [
-	cookieParser(),
-	bodyParser.json()
-];
+var targetUrl, startMarker, endMarker,
+	middleware = [
+		cookieParser(),
+		bodyParser.json()
+	];
 
 if(ARGS.dev){
-	/**
-	 * Setup routes to point to mock-server
-	 */
-	const LOCAL_URL = `http://localhost:${CONFIG.DEV.PORT}`;
+	const DEV_CONFIG = require('./dev/mock-server/config.json');
 
-	routes = {
-		'ALL--*': (req, res)=>{
-			const URL = LOCAL_URL + req.originalUrl,
-				METHOD = req.method.toLowerCase();
-
-			if(!res.headersSent){
-				httpRequest[METHOD](URL).on('error', console.error).pipe(res);
-			}else{
-				res.end();
-			}
-		}
-	};
-
-	/**
-	 * Create dev recorder
-	 */
-	let recorder = new Recorder({
-		method: 'GET',
-		path: CONFIG.DEV.START_PATH
-	}, {
-		method: 'GET',
-		path: CONFIG.DEV.END_PATH
-	}, recordingFinished);
-
-	middleware = middleware.concat(recorder.middleware);
+	targetUrl = `http://localhost:${DEV_CONFIG.PORT}`;
+	startMarker = DEV_CONFIG.START_MARKER;
+	endMarker = DEV_CONFIG.END_MARKER;
 }else{
-	/**
-	 * 
-	 */
-	// --todo--
+	targetUrl = CONFIG.TARGET_URL;
+	startMarker = CONFIG.START_MARKER;
+	endMarker = CONFIG.END_MARKER;
 }
+
+/**
+ * Setup routes
+ */
+const routes = {
+	'ALL--*': (req, res) => {
+		const url = targetUrl + req.originalUrl,
+			method = req.method.toLowerCase();
+
+		if(!res.headersSent){
+			httpRequest[method](url).on('error', console.error).pipe(res);
+		}else{
+			res.end();
+		}
+	}
+};
+
+/**
+ * Create recorder
+ */
+const recorder = new Recorder({
+	start: startMarker,
+	end: endMarker,
+	callback: instance => {
+		instance.replay = true;
+	}
+});
 
 new SimpleServer({
 	port: CONFIG.PORT,
-	middleware: middleware,
+	middleware: middleware.concat(recorder.middleware),
 	routes: routes
 });
 
 // helper abstractions ////////////////////////////////////////////////////////////////////////////////////////////////
 
-function recordingFinished(recorder){
-	recorder.replay = true;
-}
 
 // notes //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
