@@ -7,6 +7,6 @@
     },
     "END_MARKER": {
         "method": "GET",
-        "path": "/en/resources/glossary.html"
+        "path": "/en/changelog/4x.html"
     }
 }

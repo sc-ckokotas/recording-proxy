@@ -1,10 +1,11 @@
-const path = require('path');
-const phantomjs = require('phantomjs-prebuilt');
+const path = require('path'),
+    phantomjs = require('phantomjs-prebuilt');
 
-var program = phantomjs.exec(path.join(__dirname, 'lib/phantom.js'));
+const CONFIG = require('../../config.json');
+
+var program = phantomjs.exec(path.join(__dirname, 'lib/simple.js'), `http://localhost:${CONFIG.PORT}`);
 program.stdout.pipe(process.stdout);
 program.stderr.pipe(process.stderr);
 program.on('exit', () => {
-  // do something on end
-	console.log(arguments)
+    // do something on end
 })

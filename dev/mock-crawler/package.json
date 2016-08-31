@@ -1,5 +1,5 @@
 {
-  "name": "mock-crawler",
+  "name": "crawler",
   "version": "1.0.0",
   "description": "",
   "main": "crawler.js",

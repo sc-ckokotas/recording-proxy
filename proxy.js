@@ -45,6 +45,7 @@ const routes = {
 			method = req.method.toLowerCase();
 
 		if(!res.headersSent){
+			console.log(`Proxying request to: ${url}`);
 			httpRequest[method](url).on('error', console.error).pipe(res);
 		}else{
 			res.end();
@@ -72,12 +73,12 @@ new SimpleServer({
 // helper abstractions ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// notes //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* TODO ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// config specifiying urls that will mark beginning and end of recording session
+	recorded sessions will be stored after end. Beginning marker will act as key for response sequence ??? should use actual hashmap ???
 
-// recorded sessions will be stored after end. Beginning marker will act as key for response sequence ??? should use actual hashmap ???
+	status-code, headers, body, start-time, latency(time to first byte), total-time, total-size -- (headers as JSON OK) (body as Blob or some binary data)
 
-// status-code, headers, body, start-time, latency(time to first byte), total-time, total-size -- (headers as JSON OK) (body as Blob or some binary data)
+	admin page with HAR(http-archive) (see kuit / ask steve) to view all recorders and manage them
 
-// admin page with HAR(http-archive) (see kuit / ask steve) to view all recorders and manage them
+*/
