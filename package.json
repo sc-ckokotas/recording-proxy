@@ -5,9 +5,9 @@
   "main": "proxy.js",
   "scripts": {
     "postinstall": "sh ./scripts/post-install.sh",
-    "crawler": "nodemon dev/mock-crawler/ -w dev/mock-crawler -e js",
+    "crawler": "node dev/mock-crawler/",
     "mock": "node . --dev & node dev/mock-server",
-    "start": "nodemon proxy -w lib -w . -e js",
+    "start": "node .",
     "test": "jasmine"
   },
   "author": "",

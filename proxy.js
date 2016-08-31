@@ -61,6 +61,7 @@ const recorder = new Recorder({
 	end: endMarker,
 	callback: instance => {
 		instance.replay = true;
+		console.log(instance.stringify(4));
 	}
 });
 
