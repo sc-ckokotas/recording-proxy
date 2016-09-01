@@ -35,6 +35,12 @@ const recorder = new Recorder({
 new SimpleServer({
 	port: CONFIG.PORT,
 	routes: {
+		'GET--/recording-proxy/stage'(req, res){
+			res.render('stage.ejs');
+		},
+		'GET--/recording-proxy/final'(req, res){
+			res.render('final.ejs');
+		},
 		'GET--/recording-proxy/dashboard'(req, res){
 			res.end('--TODO--');
 		}

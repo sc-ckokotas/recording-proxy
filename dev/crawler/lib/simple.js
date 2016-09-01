@@ -1,55 +1,61 @@
 var webpage = require('webpage'),
-	targetPage = webpage.create(),
-	args = require('system').args,
-	consoleRef = console.log.bind(console),
-	targetUrl = args[1];
+	args = require('system').args;
 
-targetPage.onConsoleMessage = consoleRef;
-targetPage.onError = consoleRef;
+var CONFIG = JSON.parse(args[1]);
 
-targetPage.open(targetUrl, function(status) {
-	console.log("Target Page loadded with status: " + status);
-	if(status === 'success'){
-		try{
-			onPageLoad();
-		}catch(e){
-			console.log(e);
-			onDone();
-		}
-	}else{
-		onDone();
-	}
+var stage = webpage.create(),
+	final = webpage.create(),
+	target = webpage.create(),
+	consoleRef = console.log.bind(console);
+
+stage.onConsoleMessage = final.onConsoleMessage = target.onConsoleMessage = consoleRef;
+stage.onError = final.onError = target.onError = consoleRef;
+
+openPage(stage, CONFIG.STAGE_URL, function(page){
+	page.evaluate(enterFlowCookie, 'crawl');
 });
 
-function onPageLoad(){
-	var links = [],
-		loaded = 0;
+openPage(target, CONFIG.TARGET_URL, function(page){
+	var linksLoaded = 0;
 
-	targetPage.includeJs('https://code.jquery.com/jquery-3.1.0.min.js', function(){
-		links = targetPage.evaluate(gatherLinks);
-		links.forEach(function(link){
-			openOtherPage(link, function(status){
-				console.log('Page: "' + link + '" was loadded with status: "' + status + '"');
-				if(++loaded === links.length){
-					console.log('Page evaluation complete...');
-					onDone();
-				}
-			});
+	page.evaluate(gatherLinks).forEach(function(link, i, links){
+		openPage(webpage.create(), CONFIG.PROXY_URL + link, function(page){
+			if(++linksLoaded === links.length){
+				openPage(final, CONFIG.FINAL_URL, onDone);
+			}
 		});
 	});
+});
+
+function openPage(page, URL, callback){
+	page.open(URL, function(status){
+		console.log(URL + " loadded with status: " + status);
+		if(status === 'success'){
+			try{
+				callback(page);
+			}catch(e){
+				console.log(e);
+				onDone();
+			}
+		}else{
+			onDone();
+		}
+	});
+}
+
+function enterFlowCookie(flow){
+	window.onload = function(){
+		document.querySelector('#flow-input').value = flow;
+		document.querySelector('[type=button]').click();
+	}
 }
 
 function gatherLinks(){
 	var linksFromDOM = document.querySelector('#navbar').querySelectorAll('a');
 
 	return Array.prototype.map.call(linksFromDOM, function(link){
-		return link.href;
+		return link.href.replace(location.origin, '');
 	});
-}
-
-function openOtherPage(url, callback){
-	var page = webpage.create();
-	page.open(url, callback);
 }
 
 function onDone(){

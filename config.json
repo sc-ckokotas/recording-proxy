@@ -3,10 +3,10 @@
     "TARGET_URL": "https://expressjs.com",
     "START_MARKER": {
         "method": "GET",
-        "path": "/"
+        "path": "/recording-proxy/stage"
     },
     "END_MARKER": {
         "method": "GET",
-        "path": "/en/changelog/4x.html"
+        "path": "/recording-proxy/final"
     }
 }
