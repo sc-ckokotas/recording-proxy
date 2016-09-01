@@ -17,6 +17,8 @@
                 elapsed = 0;
 
             window.onload = function(){
+                document.cookie = 'recording-flow=mock;path=/';
+
                 setTimeout(function recurse(){
                     elapsed = Date.now() - start;
                     var remaining = elapsed < totalDelay ? totalDelay - elapsed : 0;

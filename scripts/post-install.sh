@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Install redis
 if [ ! -d "redis-stable" ]; then 
     echo "POST-INSTALL: Downloading, unpacking, and building redis locally."
     mkdir tmp; cd tmp;

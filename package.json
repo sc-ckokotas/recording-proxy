@@ -5,7 +5,7 @@
   "main": "proxy.js",
   "scripts": {
     "postinstall": "sh ./scripts/post-install.sh",
-    "crawler": "node dev/mock-crawler/",
+    "crawler": "node dev/crawler/",
     "mock": "node . --dev & node dev/mock-server",
     "start": "node .",
     "test": "jasmine"

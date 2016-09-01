@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <style>
+            * {
+                font-family: sans-serif;
+                font-size: 24px;
+            }
+        </style>
+        <script>
+            function setCookie(){
+                document.cookie = 'recording-flow=' + document.querySelector('#flow-input').value + ';path=/';
+            }
+        </script>
+    </head>
+    <body>
+        <input type="text" id="flow-input">
+        <input type="button" onclick="setCookie()" value="Set flow cookie">
+    </body>
+</html>
